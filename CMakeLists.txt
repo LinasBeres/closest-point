@@ -13,15 +13,7 @@ find_package(LIBIGL REQUIRED QUIET)
 include_directories(${PROJECT_SOURCE_DIR})
 
 set(SRC_FILES ${PROJECT_SOURCE_DIR}/main.cpp
-              ${PROJECT_SOURCE_DIR}/mytools.cpp
-              ${PROJECT_SOURCE_DIR}/mytools.h
-              ${PROJECT_SOURCE_DIR}/nanoflann.hpp
-              ${PROJECT_SOURCE_DIR}/ICP.hpp
-              ${PROJECT_SOURCE_DIR}/ICP.cpp
-              ${PROJECT_SOURCE_DIR}/debug.h
-              ${PROJECT_SOURCE_DIR}/MyContext.hpp
-              ${PROJECT_SOURCE_DIR}/MyContext.cpp
-              )
+	)
 
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
