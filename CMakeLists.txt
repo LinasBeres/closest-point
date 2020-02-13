@@ -12,8 +12,12 @@ find_package(LIBIGL REQUIRED QUIET)
 
 include_directories(${PROJECT_SOURCE_DIR})
 
-set(SRC_FILES ${PROJECT_SOURCE_DIR}/src/main.cpp)
-
+set(SRC_FILES
+	${PROJECT_SOURCE_DIR}/src/main.cpp
+	${PROJECT_SOURCE_DIR}/src/Context.cpp
+	${PROJECT_SOURCE_DIR}/src/ClosestPoint.cpp
+	${PROJECT_SOURCE_DIR}/src/KdTree.cpp
+)
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME} igl::core igl::opengl_glfw igl::opengl_glfw_imgui)

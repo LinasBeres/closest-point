@@ -1,28 +1,34 @@
-#include <igl/readOFF.h>
-#include <igl/readPLY.h>
-#include <igl/opengl/glfw/Viewer.h>
-#include <igl/opengl/glfw/imgui/ImGuiMenu.h>
-#include <igl/opengl/glfw/imgui/ImGuiHelpers.h>
-#include <igl/vertex_triangle_adjacency.h>
-#include <igl/writeOFF.h>
-#include <igl/file_exists.h>
-#include <imgui/imgui.h>
 #include <iostream>
-#include <random>
 
-Eigen::MatrixXd V;
-Eigen::MatrixXi F;
+#include "Context.h"
+#include "ClosestPoint.h"
 
 int main(int argc, char *argv[])
 {
-	// Load a mesh in PLY format
-	igl::readPLY("../data/bun000.ply", V, F);
+	const std::string& mesh = argc > 1 ? argv[1] : "../data/bun000.ply";
 
-	// Plot the mesh
-	igl::opengl::glfw::Viewer viewer;
-	viewer.data().clear();
-	viewer.data().add_points(V, Eigen::RowVector3d(0, 0, 1));
-	viewer.launch();
+	Context my_context;
+
+	if(!my_context.addMesh(mesh))
+		return 1;
+
+	// my_context.display();
+	ClosestPoint finder(my_context.getVertices());
+
+
+	std::cerr << "Geting closest point threaded\n";
+	Eigen::Vector3d v(-0.0075, 0.0344859, 0.0216591);
+	Eigen::Vector3d w;
+	finder.closestPointThreaded(v, 50, w);
+
+	std::cerr << "w: " << w << "\n";
+
+	std::cerr << "Geting closest point non threaded\n";
+	Eigen::Vector3d p(-0.0075, 0.0344859, 0.0216591);
+	Eigen::Vector3d q;
+	finder.closestPointBruteForce(p, 50, q);
+
+	std::cerr << "w: " << q << "\n";
 
 	return 0;
 }
