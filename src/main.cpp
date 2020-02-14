@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
 	// my_context.display();
 	ClosestPoint finder(my_context.getVertices());
 
-
 	std::cerr << "Geting closest point threaded\n";
 	Eigen::Vector3d v(-0.0075, 0.0344859, 0.0216591);
 	Eigen::Vector3d w;
