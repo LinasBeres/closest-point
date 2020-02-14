@@ -2,7 +2,6 @@
 
 #include "Context.h"
 #include "ClosestPoint.h"
-#include "KdTree.h"
 
 int main(int argc, char *argv[])
 {
@@ -31,11 +30,11 @@ int main(int argc, char *argv[])
 
 	std::cerr << "w: " << q << "\n";
 
+	finder.constructKdTree();
 	std::cerr << "Getting closest point using KdTree\n";
-	KdTree kdTree(my_context.getVertices());
 	Eigen::Vector3d s(-0.0075, 0.0344859, 0.0216591);
 	Eigen::Vector3d t;
-	kdTree.closestPoint(s, 50, t);
+	finder.closestPointKdTree(s, 50, t);
 
 	std::cerr << "w: " << t << "\n";
 

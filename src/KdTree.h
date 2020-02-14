@@ -25,6 +25,11 @@ class KdTree
 		KdTree(const std::shared_ptr<Eigen::MatrixXd>& V);
 		~KdTree();
 
+		size_t treeSize()
+		{
+			return nodes.size();
+		}
+
 		bool closestPoint(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point);
 	private:
 		struct node_cmp
@@ -44,7 +49,6 @@ class KdTree
 		KdNode* nearest;
 		std::vector<KdNode> nodes;
 		float max_dist;
-		float no_hits;
 };
 
 

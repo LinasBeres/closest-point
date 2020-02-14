@@ -82,6 +82,24 @@ bool ClosestPoint::closestPointThreaded(const Eigen::Vector3d& queryPoint, const
 	return found;
 }
 
+bool ClosestPoint::constructKdTree()
+{
+	kdTree = new KdTree(V);
+
+	return kdTree->treeSize() != 0;
+}
+
+
+/**
+ * Same but using the KdTree
+ */
+bool ClosestPoint::closestPointKdTree(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point) const
+{
+	bool found = false;
+
+	return found;
+}
+
 float ClosestPoint::euclideanDistance(const Eigen::Vector3d& p, const Eigen::Vector3d& q)
 {
 	float d1 = pow(p(0) - q(0), 2);
