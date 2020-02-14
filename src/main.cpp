@@ -31,9 +31,8 @@ int main(int argc, char *argv[])
 
 	std::cerr << "w: " << q << "\n";
 
-	std::cerr << "Make KdTree\n";
+	std::cerr << "Getting closest point using KdTree\n";
 	KdTree kdTree(my_context.getVertices());
-	std::cerr << "Made KdTree\n";
 	Eigen::Vector3d s(-0.0075, 0.0344859, 0.0216591);
 	Eigen::Vector3d t;
 	kdTree.closestPoint(s, 50, t);

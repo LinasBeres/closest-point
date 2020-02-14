@@ -44,6 +44,7 @@ class KdTree
 		KdNode* nearest;
 		std::vector<KdNode> nodes;
 		float max_dist;
+		float no_hits;
 };
 
 

@@ -9,6 +9,7 @@ KdTree::KdTree(const std::shared_ptr<Eigen::MatrixXd>& V)
 	nearest = nullptr;
 	nodes.reserve(V->rows());
 	max_dist = 0;
+	no_hits = 0;
 
 	for(size_t i = 0; i < V->rows(); i++)
 		nodes.emplace_back(V->row(i), i);
@@ -22,11 +23,16 @@ KdTree::~KdTree()
 
 bool KdTree::closestPoint(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point)
 {
+	no_hits = 0;
 	nearest = nullptr;
-	max_dist = maxDist;
+	max_dist = 0;
 
 	findNearest(root, queryPoint, 0);
 	point = nearest->vertex;
+	std::cerr << "no_hits: " << no_hits << "\n";
+
+	if(ClosestPoint::euclideanDistance(point, queryPoint) > maxDist)
+		return false;
 
 	return true;
 }
@@ -49,6 +55,8 @@ void KdTree::findNearest(KdNode* root, const Eigen::Vector3d& point, size_t dime
 {
 	if(root ==nullptr)
 		return;
+
+	no_hits++;
 
 	float dist = ClosestPoint::euclideanDistance(root->vertex, point);
 	if(nearest == nullptr || dist < max_dist) {
