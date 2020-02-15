@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
 	bool threaded_mode = false;
 	bool kdtree_mode = false;
 
+	// Arguments
 	for(int i = 1; i < argc; i++) {
 		if(strcmp(argv[i], "--mesh") == 0) {
 			if(i+1 >= argc) {
@@ -42,7 +43,16 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	// A 'hack' to disable annoying libigl Viewer usage message.
+	if(command_line)
+		std::cout.setstate(std::ios::failbit);
+
 	Context my_context;
+
+	// Enable again
+	if(command_line)
+		std::cout.clear();
+
 	if(!my_context.addMesh(mesh))
 		return 1;
 
@@ -52,7 +62,6 @@ int main(int argc, char *argv[])
 		Eigen::Vector3d out;
 		ClosestPoint finder(my_context.getVertices());
 
-		std::cout << "\n";
 		std::cout << "In: " << query_point(0) << "," << query_point(1) << "," << query_point(2) << "\n";
 		std::cout << "Maximum distance: " << maxDist << "\n";
 
@@ -75,6 +84,7 @@ int main(int argc, char *argv[])
 			std::cout << "Could not find point within maximum distance\n";
 		}
 	} else {
+		// Launch GUI
 		my_context.display();
 	}
 

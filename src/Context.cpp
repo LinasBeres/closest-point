@@ -38,27 +38,15 @@ Context::Context()
 		}
 		if(ImGui::InputFloat("x position", &x)) {
 			query_point(0) = x;
-			viewer.data().clear();
-			viewer.data().set_mesh(*V, *F);
-			viewer.core().align_camera_center(*V, *F);
-			display_query.row(0) = query_point;
-			viewer.data().add_points(display_query, Eigen::RowVector3d(0, 0.9, 0));
+			resetDisplay();
 		}
 		if(ImGui::InputFloat("y position", &y)) {
 			query_point(1) = y;
-			viewer.data().clear();
-			viewer.data().set_mesh(*V, *F);
-			viewer.core().align_camera_center(*V, *F);
-			display_query.row(0) = query_point;
-			viewer.data().add_points(display_query, Eigen::RowVector3d(0, 0.9, 0));
+			resetDisplay();
 		}
 		if(ImGui::InputFloat("z position", &z)) {
 			query_point(2) = z;
-			viewer.data().clear();
-			viewer.data().set_mesh(*V, *F);
-			viewer.core().align_camera_center(*V, *F);
-			display_query.row(0) = query_point;
-			viewer.data().add_points(display_query, Eigen::RowVector3d(0, 0.9, 0));
+			resetDisplay();
 		}
 		if (ImGui::Button("Find Closest Point Brute Force", ImVec2(-1, 0))) {
 			closestPoint(Mode::brute_force);
@@ -73,6 +61,16 @@ Context::Context()
 		ImGui::End();
 	};
 	viewer.plugins.push_back(&menu);
+
+}
+
+void Context::resetDisplay()
+{
+	viewer.data().clear();
+	viewer.data().set_mesh(*V, *F);
+	viewer.core().align_camera_center(*V, *F);
+	display_query.row(0) = query_point;
+	viewer.data().add_points(display_query, Eigen::RowVector3d(0, 0.9, 0));
 }
 
 bool Context::addMesh(const std::string& filepath)
@@ -120,15 +118,11 @@ void Context::closestPoint(Mode mode)
 		found = finder->closestPointBruteForce(query_point, maxDist, out, index);
 	}
 
+	display_point.row(0) = out;
+	resetDisplay();
 	if(found) {
 		std::cout << "Closest Point: " << out(0) << "," << out(1) << "," << out(2) << "\n";
 		std::cout << "Index: " << index << "\n";
-		viewer.data().clear();
-		viewer.data().set_mesh(*V, *F);
-		viewer.core().align_camera_center(*V, *F);
-		display_query.row(0) = query_point;
-		display_point.row(0) = out;
-		viewer.data().add_points(display_query, Eigen::RowVector3d(0, 0.9, 0));
 		viewer.data().add_points(display_point, Eigen::RowVector3d(0, 0, 0.9));
 	} else {
 		std::cout << "Could not find point within maximum distance\n";

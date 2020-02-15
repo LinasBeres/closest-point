@@ -32,6 +32,7 @@ class Context
 
 	private:
 		void closestPoint(Mode mode);
+		void resetDisplay();
 
 		float x,y,z;
 		float maxDist;
