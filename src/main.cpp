@@ -9,37 +9,47 @@ int main(int argc, char *argv[])
 	Eigen::Vector3d query_point;
 	float maxDist;
 	bool command_line = false;
-	bool threaded_mode = false;
-	bool kdtree_mode = false;
+	Mode mode = Mode::brute_force;
 
 	// Arguments
 	for(int i = 1; i < argc; i++) {
 		if(strcmp(argv[i], "--mesh") == 0) {
 			if(i+1 >= argc) {
-				std::cout << "Please specify a mesh\n";
+				std::cerr << "Please specify a mesh\n";
 				return 1;
 			}
 			mesh = argv[i+1];
 		} else if(strcmp(argv[i], "--point") == 0) {
 			if(i+3 >= argc) {
-				std::cout << "Please specify a 3d point\n";
+				std::cerr << "Please specify a 3d point\n";
 				return 1;
 			}
-			query_point << std::stof(argv[i+1]), std::stof(argv[i+2]), std::stof(argv[i+3]);
+			try {
+				float x = std::stof(argv[i+1]);
+				float y = std::stof(argv[i+2]);
+				float z = std::stof(argv[i+3]);
+				query_point << x, y, z;
+			} catch(const std::invalid_argument& e) {
+				std::cerr << "Please input a valid vector\n";
+				return 1;
+			}
 		} else if(strcmp(argv[i], "--dist") == 0) {
 			if(i+1 >= argc) {
-				std::cout << "Please specify a maximum distance\n";
+				std::cerr << "Please specify a maximum distance\n";
 				return 1;
 			}
-			maxDist = std::stof(argv[i+1]);
+			try {
+				maxDist = std::stof(argv[i+1]);
+			} catch(const std::invalid_argument& e) {
+				std::cerr << "Please input a valid maximum distance\n";
+				return 1;
+			}
 		} else if(strcmp(argv[i], "--cmd") == 0) {
 			command_line = true;
 		} else if(strcmp(argv[i], "--threaded") == 0) {
-			threaded_mode = true;
-			kdtree_mode = false;
+			mode = Mode::threaded;
 		} else if(strcmp(argv[i], "--kdtree") == 0) {
-			kdtree_mode = true;
-			threaded_mode = false;
+			mode = Mode::kdtree;
 		}
 	}
 
@@ -65,10 +75,10 @@ int main(int argc, char *argv[])
 		std::cout << "In: " << query_point(0) << "," << query_point(1) << "," << query_point(2) << "\n";
 		std::cout << "Maximum distance: " << maxDist << "\n";
 
-		if(threaded_mode) {
+		if(mode == Mode::threaded) {
 			std::cout << "Geting closest point threaded\n";
 			found = finder.closestPointThreaded(query_point, maxDist, out, index);
-		} else if(kdtree_mode) {
+		} else if(mode == Mode::kdtree) {
 			finder.constructKdTree();
 			std::cout << "Getting closest point using KdTree\n";
 			found = finder.closestPointKdTree(query_point, maxDist, out, index);
