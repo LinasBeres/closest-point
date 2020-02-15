@@ -16,9 +16,9 @@ class ClosestPoint
 
 		bool constructKdTree();
 
-		bool closestPointBruteForce(const Eigen::Vector3d& queryPoint, float maxDist, Eigen::Vector3d& point) const;
-		bool closestPointThreaded(const Eigen::Vector3d& queryPoint, float maxDist, Eigen::Vector3d& point) const;
-		bool closestPointKdTree(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point) const;
+		bool closestPointBruteForce(const Eigen::Vector3d& queryPoint, float maxDist, Eigen::Vector3d& point, int& index) const;
+		bool closestPointThreaded(const Eigen::Vector3d& queryPoint, float maxDist, Eigen::Vector3d& point, int& index) const;
+		bool closestPointKdTree(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point, int& index) const;
 
 		static float euclideanDistance(const Eigen::Vector3d& p, const Eigen::Vector3d& q);
 	private:

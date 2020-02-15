@@ -11,7 +11,7 @@
 class Context
 {
 	public:
-		Context() {}
+		Context();
 		~Context() {}
 
 		// Loades in the vertices and faces into V & F, return false if file doesn't exist

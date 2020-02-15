@@ -1,6 +1,8 @@
 #ifndef KDTREE_POINT_H
 #define KDTREE_POINT_H
 
+#define DIMENSIONS 3
+
 #include "ClosestPoint.h"
 
 #include <Eigen/Eigen>
@@ -30,7 +32,7 @@ class KdTree
 			return nodes.size();
 		}
 
-		bool closestPoint(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point);
+		bool closestPoint(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point, int& index);
 	private:
 		struct node_cmp
 		{

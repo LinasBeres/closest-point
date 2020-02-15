@@ -9,7 +9,7 @@
  * Find closet point to search query given a maximum distance.
  * O(n)
  */
-bool ClosestPoint::closestPointBruteForce(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point) const
+bool ClosestPoint::closestPointBruteForce(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point, int& index) const
 {
 	float min_distance = maxDist;
 	bool found = false;
@@ -25,6 +25,7 @@ bool ClosestPoint::closestPointBruteForce(const Eigen::Vector3d& queryPoint, con
 			min_distance = dist;
 			point = V->row(i);
 			found = true;
+			index = i;
 		}
 	}
 
@@ -34,10 +35,10 @@ bool ClosestPoint::closestPointBruteForce(const Eigen::Vector3d& queryPoint, con
 /**
  * Same as above but threaded.
  */
-bool ClosestPoint::closestPointThreaded(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point) const
+bool ClosestPoint::closestPointThreaded(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point, int& index) const
 {
 	const size_t cores = std::thread::hardware_concurrency();
-	std::vector<std::future<std::tuple<bool, Eigen::Vector3d, float>>> future_vector;
+	std::vector<std::future<std::tuple<bool, Eigen::Vector3d, float, int>>> future_vector;
 
 	// Split work into equal chunks of the vertices from the mesh
 	// so that each core gets an equal amount of work
@@ -46,7 +47,7 @@ bool ClosestPoint::closestPointThreaded(const Eigen::Vector3d& queryPoint, const
 	// Construct the futures and return a tuple for each chunk
 	for(size_t i = 0; i < cores; i++) {
 		future_vector.emplace_back(std::async(std::launch::async, [=]() {
-			auto out = std::make_tuple(false, Eigen::Vector3d(0,0,0), maxDist);
+			auto out = std::make_tuple(false, Eigen::Vector3d(0,0,0), maxDist, 0);
 
 			for(size_t j = i*chunk; j < chunk*(i+1) && j < V->rows(); j++) {
 				float dist = euclideanDistance(V->row(j), queryPoint);
@@ -58,6 +59,7 @@ bool ClosestPoint::closestPointThreaded(const Eigen::Vector3d& queryPoint, const
 					std::get<0>(out) = true;
 					std::get<1>(out) = V->row(j);
 					std::get<2>(out) = dist;
+					std::get<3>(out) = j;
 				}
 			}
 
@@ -76,6 +78,7 @@ bool ClosestPoint::closestPointThreaded(const Eigen::Vector3d& queryPoint, const
 			min_distance = std::get<2>(out);
 			point = std::get<1>(out);
 			found = true;
+			index = std::get<3>(out);
 		}
 	}
 
@@ -92,9 +95,9 @@ bool ClosestPoint::constructKdTree()
 /**
  * Same but using the KdTree
  */
-bool ClosestPoint::closestPointKdTree(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point) const
+bool ClosestPoint::closestPointKdTree(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point, int& index) const
 {
-	return kdTree->closestPoint(queryPoint, maxDist, point);
+	return kdTree->closestPoint(queryPoint, maxDist, point, index);
 }
 
 float ClosestPoint::euclideanDistance(const Eigen::Vector3d& p, const Eigen::Vector3d& q)

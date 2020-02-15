@@ -28,14 +28,14 @@ KdNode* KdTree::makeKdTree(size_t start, size_t end, size_t dimension)
 
 	size_t mid = start + (end - start)/2;
 	std::nth_element(&nodes[start], &nodes[mid], &nodes[end], node_cmp(dimension));
-	dimension = (dimension + 1) % 3;
+	dimension = (dimension + 1) % DIMENSIONS;
 	nodes[mid].left = makeKdTree(start, mid, dimension);
 	nodes[mid].right = makeKdTree(mid + 1, end, dimension);
 
 	return &nodes[mid];
 }
 
-bool KdTree::closestPoint(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point)
+bool KdTree::closestPoint(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point, int& index)
 {
 	nearest = nullptr;
 	max_dist = 0;
@@ -49,6 +49,7 @@ bool KdTree::closestPoint(const Eigen::Vector3d& queryPoint, const float maxDist
 	// Search the KdTree
 	findNearest(root, queryPoint, 0);
 	point = nearest->vertex;
+	index = nearest->index;
 
 	// If point found is more than the maximum distance then we need to return false.
 	if(ClosestPoint::euclideanDistance(point, queryPoint) > maxDist)
@@ -72,7 +73,7 @@ void KdTree::findNearest(KdNode* root, const Eigen::Vector3d& point, size_t dime
 		return;
 
 	float dx = root->vertex(dimension) - point(dimension);
-	dimension = (dimension + 1) % 3;
+	dimension = (dimension + 1) % DIMENSIONS;
 	findNearest(dx > 0 ? root->left : root->right, point, dimension);
 
 	if(abs(dx) >= max_dist)

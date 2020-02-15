@@ -6,6 +6,18 @@
 #include <igl/opengl/glfw/imgui/ImGuiMenu.h>
 #include <igl/opengl/glfw/imgui/ImGuiHelpers.h>
 
+bool key_down(igl::opengl::glfw::Viewer& viewer, unsigned char key, int modifier)
+{
+	if (key == 'q' || key == 'Q') {
+		exit(0);
+	}
+  return false;
+}
+
+Context::Context()
+{
+	viewer.callback_key_down = &key_down;
+}
 
 bool Context::addMesh(const std::string& filepath)
 {
@@ -27,7 +39,7 @@ bool Context::addMesh(const std::string& filepath)
 void Context::display()
 {
 	viewer.data().clear();
-	viewer.data().add_points(*V, Eigen::RowVector3d(0, 0, 1));
+	viewer.data().set_mesh(*V, *F);
 	viewer.core().align_camera_center(*V, *F);
 	viewer.launch();
 }

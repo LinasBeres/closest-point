@@ -5,37 +5,77 @@
 
 int main(int argc, char *argv[])
 {
-	const std::string& mesh = argc > 1 ? argv[1] : "../data/bun000.ply";
+	std::string mesh;
+	Eigen::Vector3d query_point;
+	float maxDist;
+	bool command_line = false;
+	bool threaded_mode = false;
+	bool kdtree_mode = false;
+
+	for(int i = 1; i < argc; i++) {
+		if(strcmp(argv[i], "--mesh") == 0) {
+			if(i+1 >= argc) {
+				std::cout << "Please specify a mesh\n";
+				return 1;
+			}
+			mesh = argv[i+1];
+		} else if(strcmp(argv[i], "--point") == 0) {
+			if(i+3 >= argc) {
+				std::cout << "Please specify a 3d point\n";
+				return 1;
+			}
+			query_point << std::stof(argv[i+1]), std::stof(argv[i+2]), std::stof(argv[i+3]);
+		} else if(strcmp(argv[i], "--dist") == 0) {
+			if(i+1 >= argc) {
+				std::cout << "Please specify a maximum distance\n";
+				return 1;
+			}
+			maxDist = std::stof(argv[i+1]);
+		} else if(strcmp(argv[i], "--cmd") == 0) {
+			command_line = true;
+		} else if(strcmp(argv[i], "--threaded") == 0) {
+			threaded_mode = true;
+			kdtree_mode = false;
+		} else if(strcmp(argv[i], "--kdtree") == 0) {
+			kdtree_mode = true;
+			threaded_mode = false;
+		}
+	}
 
 	Context my_context;
-
 	if(!my_context.addMesh(mesh))
 		return 1;
 
-	// my_context.display();
-	ClosestPoint finder(my_context.getVertices());
+	if(command_line) {
+		int index;
+		Eigen::Vector3d out;
+		ClosestPoint finder(my_context.getVertices());
 
-	std::cerr << "Geting closest point threaded\n";
-	Eigen::Vector3d v(-0.0075, 0.0344859, 0.0216591);
-	Eigen::Vector3d w;
-	finder.closestPointThreaded(v, 50, w);
+		std::cout << "\n";
+		std::cout << "In: " << query_point(0) << "," << query_point(1) << "," << query_point(2) << "\n";
+		std::cout << "Maximum distance: " << maxDist << "\n";
 
-	std::cerr << "w: " << w << "\n";
+		if(threaded_mode) {
+			std::cout << "Geting closest point threaded\n";
+			finder.closestPointThreaded(query_point, maxDist, out, index);
 
-	std::cerr << "Geting closest point non threaded\n";
-	Eigen::Vector3d p(-0.0075, 0.0344859, 0.0216591);
-	Eigen::Vector3d q;
-	finder.closestPointBruteForce(p, 50, q);
-
-	std::cerr << "w: " << q << "\n";
-
-	finder.constructKdTree();
-	std::cerr << "Getting closest point using KdTree\n";
-	Eigen::Vector3d s(-0.0075, 0.0344859, 0.0216591);
-	Eigen::Vector3d t;
-	finder.closestPointKdTree(s, 50, t);
-
-	std::cerr << "w: " << t << "\n";
+			std::cout << "Closest Point: " << out(0) << "," << out(1) << "," << out(2) << "\n";
+			std::cout << "Index: " << index << "\n";
+		} else if(kdtree_mode) {
+			finder.constructKdTree();
+			std::cout << "Getting closest point using KdTree\n";
+			finder.closestPointKdTree(query_point, maxDist, out, index);
+			std::cout << "Closest Point: " << out(0) << "," << out(1) << "," << out(2) << "\n";
+			std::cout << "Index: " << index << "\n";
+		} else {
+			std::cout << "Geting closest point non threaded\n";
+			finder.closestPointBruteForce(query_point, maxDist, out, index);
+			std::cout << "Closest Point: " << out(0) << "," << out(1) << "," << out(2) << "\n";
+			std::cout << "Index: " << index << "\n";
+		}
+	} else {
+		my_context.display();
+	}
 
 	return 0;
 }
