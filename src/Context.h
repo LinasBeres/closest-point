@@ -1,12 +1,17 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
+#include "ClosestPoint.h"
 
 #include <igl/opengl/glfw/Viewer.h>
+#include <igl/opengl/glfw/imgui/ImGuiMenu.h>
+#include <igl/opengl/glfw/imgui/ImGuiHelpers.h>
+#include <imgui/imgui.h>
 #include <Eigen/Eigen>
 #include <string>
 #include <memory>
 
+enum class Mode {brute_force, threaded, kdtree};
 
 class Context
 {
@@ -19,7 +24,6 @@ class Context
 		// Displays the GUI
 		void display();
 
-		bool closestPoint(const Eigen::Vector3d& queryPoint, float maxDist, Eigen::Vector3d& point);
 
 		std::shared_ptr<Eigen::MatrixXd> getVertices()
 		{
@@ -27,7 +31,15 @@ class Context
 		};
 
 	private:
+		void closestPoint(Mode mode);
+
+		float x,y,z;
+		float maxDist;
+		Eigen::Vector3d query_point;
+		Eigen::MatrixXd display_query, display_point;
+		ClosestPoint* finder;
 		igl::opengl::glfw::Viewer viewer;
+		igl::opengl::glfw::imgui::ImGuiMenu menu;
 		std::shared_ptr<Eigen::MatrixXd> V;
 		std::shared_ptr<Eigen::MatrixXi> F;
 };

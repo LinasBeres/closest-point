@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
 		return 1;
 
 	if(command_line) {
+		bool found = false;
 		int index;
 		Eigen::Vector3d out;
 		ClosestPoint finder(my_context.getVertices());
@@ -57,21 +58,21 @@ int main(int argc, char *argv[])
 
 		if(threaded_mode) {
 			std::cout << "Geting closest point threaded\n";
-			finder.closestPointThreaded(query_point, maxDist, out, index);
-
-			std::cout << "Closest Point: " << out(0) << "," << out(1) << "," << out(2) << "\n";
-			std::cout << "Index: " << index << "\n";
+			found = finder.closestPointThreaded(query_point, maxDist, out, index);
 		} else if(kdtree_mode) {
 			finder.constructKdTree();
 			std::cout << "Getting closest point using KdTree\n";
-			finder.closestPointKdTree(query_point, maxDist, out, index);
+			found = finder.closestPointKdTree(query_point, maxDist, out, index);
+		} else {
+			std::cout << "Geting closest point non threaded\n";
+			found = finder.closestPointBruteForce(query_point, maxDist, out, index);
+		}
+
+		if(found) {
 			std::cout << "Closest Point: " << out(0) << "," << out(1) << "," << out(2) << "\n";
 			std::cout << "Index: " << index << "\n";
 		} else {
-			std::cout << "Geting closest point non threaded\n";
-			finder.closestPointBruteForce(query_point, maxDist, out, index);
-			std::cout << "Closest Point: " << out(0) << "," << out(1) << "," << out(2) << "\n";
-			std::cout << "Index: " << index << "\n";
+			std::cout << "Could not find point within maximum distance\n";
 		}
 	} else {
 		my_context.display();

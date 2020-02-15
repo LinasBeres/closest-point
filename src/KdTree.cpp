@@ -6,6 +6,7 @@
 
 KdTree::KdTree(const std::shared_ptr<Eigen::MatrixXd>& V)
 {
+	root = nullptr;
 	nearest = nullptr;
 	nodes.reserve(V->rows());
 	max_dist = 0;

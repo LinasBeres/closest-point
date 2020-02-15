@@ -11,7 +11,7 @@ class KdTree;
 class ClosestPoint
 {
 	public:
-		ClosestPoint(const std::shared_ptr<Eigen::MatrixXd> V) : V(V) {}
+		ClosestPoint(const std::shared_ptr<Eigen::MatrixXd> V) : V(V), kdTree(nullptr) {}
 		~ClosestPoint() {}
 
 		bool constructKdTree();

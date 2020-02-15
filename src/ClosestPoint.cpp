@@ -97,6 +97,11 @@ bool ClosestPoint::constructKdTree()
  */
 bool ClosestPoint::closestPointKdTree(const Eigen::Vector3d& queryPoint, const float maxDist, Eigen::Vector3d& point, int& index) const
 {
+	if(kdTree == nullptr || kdTree->treeSize() == 0) {
+		std::cout << "KdTree has not been constructed, please construct it first.\n";
+		return false;
+	}
+
 	return kdTree->closestPoint(queryPoint, maxDist, point, index);
 }
 
