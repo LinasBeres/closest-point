@@ -5,7 +5,10 @@ Find the closest point on a mesh given a query point and a maximum distance.
 ## Building and Running
 Requires cmake at 3.1 or higher and make.
 
-First make sure that libigl exists in this directory, this can be done by `git clone --recursive https://github.com/libigl/libigl.git`.
+First make sure that libigl exists in this directory, this can be done by:
+```
+git clone --recursive https://github.com/libigl/libigl.git
+```
 
 To build:
 ```
