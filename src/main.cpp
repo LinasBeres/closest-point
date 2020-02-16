@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "test.h"
 #include "Context.h"
 #include "ClosestPoint.h"
 
@@ -10,6 +11,7 @@ int main(int argc, char *argv[])
 	float maxDist;
 	bool command_line = false;
 	Mode mode = Mode::brute_force;
+	bool test = false;
 
 	// Arguments
 	for(int i = 1; i < argc; i++) {
@@ -50,23 +52,28 @@ int main(int argc, char *argv[])
 			mode = Mode::threaded;
 		} else if(strcmp(argv[i], "--kdtree") == 0) {
 			mode = Mode::kdtree;
+		} else if(strcmp(argv[i], "--test") == 0) {
+			test = true;
 		}
 	}
 
 	// A 'hack' to disable annoying libigl Viewer usage message.
-	if(command_line)
+	if(command_line || test)
 		std::cout.setstate(std::ios::failbit);
 
 	Context my_context;
 
 	// Enable again
-	if(command_line)
+	if(command_line || test)
 		std::cout.clear();
 
 	if(!my_context.addMesh(mesh))
 		return 1;
 
-	if(command_line) {
+	if(test) {
+		runTests(my_context);
+		return 0;
+	} else if(command_line) {
 		bool found = false;
 		int index;
 		Eigen::Vector3d out;

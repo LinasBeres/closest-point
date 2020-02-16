@@ -9,7 +9,7 @@ bool key_down(igl::opengl::glfw::Viewer& viewer, unsigned char key, int modifier
 	if (key == 'q' || key == 'Q') {
 		exit(0);
 	}
-  return false;
+	return false;
 }
 
 Context::Context()
@@ -25,8 +25,8 @@ Context::Context()
 	menu.callback_draw_custom_window = [&]()
 	{
 		// Define next window position + size
-    ImGui::SetNextWindowPos(ImVec2(180.f * menu.menu_scaling(), 10), ImGuiSetCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(350, 225), ImGuiSetCond_FirstUseEver);
+		ImGui::SetNextWindowPos(ImVec2(180.f * menu.menu_scaling(), 10), ImGuiSetCond_FirstUseEver);
+		ImGui::SetNextWindowSize(ImVec2(350, 225), ImGuiSetCond_FirstUseEver);
 		ImGui::Begin("Closest Point", nullptr, ImGuiWindowFlags_NoSavedSettings );
 
 		if (ImGui::Button("Build KdTree", ImVec2(-1, 0))) {
