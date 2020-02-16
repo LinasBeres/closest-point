@@ -1,4 +1,6 @@
 # Closest Point
+Find the closest point on a mesh given a query point and a maximum distance.
+![alt text](https://github.com/LinasBeres/closest-point/blob/master/images/cow-closest-point.png "Closest Point on Cow Mesh")
 
 ## Building and Running
 Requires cmake at 3.1 or higher and make.
