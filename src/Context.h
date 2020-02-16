@@ -13,6 +13,9 @@
 
 enum class Mode {brute_force, threaded, kdtree};
 
+/**
+ * For reading the mesh and displaying it.
+ */
 class Context
 {
 	public:

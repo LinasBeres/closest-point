@@ -8,6 +8,9 @@
 
 class KdTree;
 
+/**
+ * Class for find the nearest point in a mesh using three different methods.
+ */
 class ClosestPoint
 {
 	public:
