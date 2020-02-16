@@ -38,3 +38,22 @@ In addition, if the point is already on the mesh, then in that case the program 
 
 ## Libraries Used
 I am using libigl and Eigen for reading, displaying and storing the mesh.
+
+## Tests
+Run tests as follows:
+```
+./closes-point --mesh ../data/cow.ply --test
+```
+which should output the following:
+```
+Average time for building KdTree: 17664.2 microseconds.
+
+Search timings:
+Average time for brute force search: 2210.8 microseconds.
+Average time for threaded search:    802.43 microseconds.
+Average time for KdTree search:      40.758 microseconds.
+
+Passed: 500 out of 500 point queries.
+```
+
+The tests compare and makes sure that all three methods give the same output. Since the brute force is the most simplest it makes sense to use that as the ground truth for the algorithm. This allows one to change the KdTree.h and KdTree.cpp and then run the tests to make sure that the new code gives the same results as before and to compare the speed to the other two methods.
